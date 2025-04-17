@@ -74,6 +74,7 @@ class InterpolationDecomposition : public concepts::DecompositionInterface<T, in
         quant_inds = quant_inds_vec.data();
 
         double eb = quantizer.get_eb();
+        std::cout<<"eb is: "<<eb<<std::endl;
 
         //            quant_inds.push_back(quantizer.quantize_and_overwrite(*data, 0));
         quant_inds[quant_index++] = quantizer.quantize_and_overwrite(*data, 0);

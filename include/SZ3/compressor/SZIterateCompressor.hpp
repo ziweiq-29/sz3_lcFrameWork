@@ -78,6 +78,8 @@ class SZIterateCompressor : public concepts::CompressorInterface<T> {
             }
         }
 
+
+
         predictor.postcompress_data(block_range->begin());
         quantizer.postcompress_data();
 
@@ -86,6 +88,12 @@ class SZIterateCompressor : public concepts::CompressorInterface<T> {
             throw std::runtime_error("The output range of the quantizer must start from 0 for this compressor");
         }
         encoder.preprocess_encode(quant_inds, quantizer.get_out_range().second);
+
+        std::cerr << ">>> DEBUG: entered GenericCompressor <<<" << std::endl;
+        for (size_t i = 0; i < std::min<size_t>(quant_inds.size(), 10); ++i) {
+        std::cerr << "quant_inds[" << i << "] = " << quant_inds[i] << std::endl;
+}
+        SZ3::writefile("quant_inds.dat", quant_inds.data(), quant_inds.size());
 
         size_t bufferSize = 1.2 * (quantizer.size_est() + encoder.size_est() + sizeof(T) * quant_inds.size());
         auto buffer = static_cast<uchar *>(malloc(bufferSize));

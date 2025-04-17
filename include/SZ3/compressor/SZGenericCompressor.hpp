@@ -36,13 +36,24 @@ class SZGenericCompressor : public concepts::CompressorInterface<T> {
     }
 
     size_t compress(const Config &conf, T *data, uchar *cmpData, size_t cmpCap) override {
+
         std::vector<int> quant_inds = decomposition.compress(conf, data);
+
+
 
         if (decomposition.get_out_range().first != 0) {
             fprintf(stderr, "The output range of the decomposition must start from 0 for this compressor\n");
             throw std::runtime_error("The output range of the decomposition must start from 0 for this compressor");
         }
         encoder.preprocess_encode(quant_inds, decomposition.get_out_range().second);
+
+        std::cerr << ">>> DEBUG: entered GenericCompressor <<<" << std::endl;
+        for (size_t i = 0; i < std::min<size_t>(quant_inds.size(), 10); ++i) {
+        std::cerr << "quant_inds[" << i << "] = " << quant_inds[i] << std::endl;
+}
+        SZ3::writefile("quant_inds.dat", quant_inds.data(), quant_inds.size());
+
+
         size_t bufferSize = std::max<size_t>(
             1000, 1.2 * (decomposition.size_est() + encoder.size_est() + sizeof(T) * quant_inds.size()));
 
